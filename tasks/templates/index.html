@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Task Tracker</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <style>
+      /* Дополнительные стили только для чекбоксов, ничего не меняют в старом коде */
+      .task-with-checkbox {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+      }
+      .task-checkbox {
+        width: 22px;
+        height: 22px;
+        cursor: pointer;
+        flex-shrink: 0;
+        margin-left: 15px;
+        accent-color: #2b7e4b;
+      }
+      .task-text {
+        flex: 1;
+      }
+      .completed-task .task-text {
+        text-decoration: line-through;
+        color: #6c757d;
+      }
+    </style>
+  </head>
+  <body>
+    {% csrf_token %}
+      <div class="container">
+        <br>
+        <h2><strong>Everyday Task Tracker Абибуллаевой З. 📝</strong></h2>
+
+        <br>
+
+         <ul class="list-group" id="taskList">
+
+            <li class="list-group-item mb-2">
+              1. Проснуться без будильника
+            </li> 
+            <li class="list-group-item mb-2">
+              2. Зарядка 15мин
+            </li> 
+            <li class="list-group-item mb-2">
+              3. Контрастный душ
+            </li> 
+           <li class="list-group-item mb-2">
+              4. Здоровый завтрак
+           </li> 
+           <li class="list-group-item mb-2">
+              5. В течение дня выпито 1.5л воды
+           </li> 
+           <li class="list-group-item mb-2">
+              6. Прогулка на свежем воздухе
+           </li>
+           <li class="list-group-item mb-2">
+              7. Необходимые занятия по учебе
+           </li>
+        </ul>
+
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+      <script>
+        // Функция добавления чекбоксов справа от каждого пункта
+        (function addCheckboxesToTasks() {
+          // Находим все пункты списка
+          const taskItems = document.querySelectorAll('#taskList .list-group-item');
+
+          // Загружаем сохранённые состояния
+          let savedStates = {};
+          const stored = localStorage.getItem('taskCheckboxes_v2');
+          if (stored) {
+            savedStates = JSON.parse(stored);
+          }
+
+          taskItems.forEach((item, index) => {
+            // Сохраняем исходный текст
+            const originalText = item.innerHTML;
+
+            // Создаём чекбокс
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'task-checkbox';
+            checkbox.setAttribute('data-task-id', index);
+
+            // Восстанавливаем сохранённое состояние
+            if (savedStates[index]) {
+              checkbox.checked = true;
+            }
+
+            // Оборачиваем текст в span
+            const textSpan = document.createElement('span');
+            textSpan.className = 'task-text';
+            textSpan.innerHTML = originalText;
+
+            // Очищаем li и добавляем новую структуру
+            item.innerHTML = '';
+            item.appendChild(textSpan);
+            item.appendChild(checkbox);
+
+            // Добавляем класс для стилизации
+            item.classList.add('task-with-checkbox');
+            if (checkbox.checked) {
+              item.classList.add('completed-task');
+            }
+
+            // Обработчик изменения состояния
+            checkbox.addEventListener('change', function() {
+              if (checkbox.checked) {
+                item.classList.add('completed-task');
+              } else {
+                item.classList.remove('completed-task');
+              }
+
+              // Сохраняем все состояния
+              const allStates = {};
+              document.querySelectorAll('#taskList .task-checkbox').forEach((cb, idx) => {
+                allStates[idx] = cb.checked;
+              });
+              localStorage.setItem('taskCheckboxes_v2', JSON.stringify(allStates));
+            });
+          });
+        })();
+      </script>
+
+  </body>
+</html>
