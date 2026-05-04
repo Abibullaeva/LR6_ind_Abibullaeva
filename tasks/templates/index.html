@@ -1,135 +1,141 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Task Tracker</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Контейнер безопасности - Гартел</title>
     <style>
-      /* Дополнительные стили только для чекбоксов, ничего не меняют в старом коде */
-      .task-with-checkbox {
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-      }
-      .task-checkbox {
-        width: 22px;
-        height: 22px;
-        cursor: pointer;
-        flex-shrink: 0;
-        margin-left: 15px;
-        accent-color: #2b7e4b;
-      }
-      .task-text {
-        flex: 1;
-      }
-      .completed-task .task-text {
-        text-decoration: line-through;
-        color: #6c757d;
-      }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .param {
+            margin: 10px 0;
+        }
+        .param label {
+            display: inline-block;
+            width: 250px;
+        }
+        .param input {
+            width: 150px;
+            padding: 5px;
+        }
+        button {
+            margin: 20px 0;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .graph {
+            margin: 30px 0;
+            text-align: center;
+        }
+        .graph img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        hr {
+            margin: 30px 0;
+        }
+        .info {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .graphs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+        }
+        .graph-card {
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 10px;
+        }
     </style>
-  </head>
-  <body>
-    {% csrf_token %}
-      <div class="container">
-        <br>
-        <h2><strong>Everyday Task Tracker Абибуллаевой З. 📝</strong></h2>
+</head>
+<body>
 
-        <br>
+    <h1>🛡️ Контейнер безопасности</h1>
+    <p>Оператор связи «Гартел» | Защита от угрозы УБИ.038</p>
 
-         <ul class="list-group" id="taskList">
+    <form method="get">
+        <div class="param">
+            <label>👥 Абонентская база (человек):</label>
+            <input type="number" name="abonents" value="{{ current_params.abonents }}">
+        </div>
+        <div class="param">
+            <label>📞 Звонков в день на абонента:</label>
+            <input type="number" name="calls_per_day" value="{{ current_params.calls_per_day }}">
+        </div>
+        <div class="param">
+            <label>✉️ SMS в день на абонента:</label>
+            <input type="number" name="sms_per_day" value="{{ current_params.sms_per_day }}">
+        </div>
+        <div class="param">
+            <label>⚠️ Критический порог свободного места (%):</label>
+            <input type="number" name="critical_free_percent" value="{{ current_params.critical_free_percent|default:10 }}" step="any">
+        </div>
+        <div class="param">
+            <label>⚡ Порог скорости потока (записей/сек):</label>
+            <input type="number" name="rate_limit_per_sec" value="{{ current_params.rate_limit_per_sec }}">
+        </div>
+        <div class="param">
+            <label>💾 Емкость буфера (записей):</label>
+            <input type="number" name="buffer_capacity" value="{{ current_params.buffer_capacity }}">
+        </div>
+        <button type="submit">🔄 Обновить графики</button>
+    </form>
 
-            <li class="list-group-item mb-2">
-              1. Проснуться без будильника
-            </li> 
-            <li class="list-group-item mb-2">
-              2. Зарядка 15мин
-            </li> 
-            <li class="list-group-item mb-2">
-              3. Контрастный душ
-            </li> 
-           <li class="list-group-item mb-2">
-              4. Здоровый завтрак
-           </li> 
-           <li class="list-group-item mb-2">
-              5. В течение дня выпито 1.5л воды
-           </li> 
-           <li class="list-group-item mb-2">
-              6. Прогулка на свежем воздухе
-           </li>
-           <li class="list-group-item mb-2">
-              7. Необходимые занятия по учебе
-           </li>
-        </ul>
+    <div class="info">
+        <p>📈 Всего записей в день: <strong>{{ total_records_per_day|default:"—" }}</strong> | 
+        💰 Окупаемость: <strong>{{ payback_months|default:"—" }} месяцев</strong></p>
+    </div>
 
-      </div>
+    <hr>
 
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <div class="graphs-grid">
+        <div class="graph-card">
+            <h2>📊 График 1: Динамика заполнения буфера</h2>
+            <div class="graph">
+                <img src="data:image/png;base64,{{ graphs.buffer }}" alt="Заполнение буфера">
+            </div>
+        </div>
 
-      <script>
-        // Функция добавления чекбоксов справа от каждого пункта
-        (function addCheckboxesToTasks() {
-          // Находим все пункты списка
-          const taskItems = document.querySelectorAll('#taskList .list-group-item');
+        <div class="graph-card">
+            <h2>📊 График 2: Мониторинг скорости потока</h2>
+            <div class="graph">
+                <img src="data:image/png;base64,{{ graphs.flow_rate }}" alt="Скорость потока">
+            </div>
+        </div>
 
-          // Загружаем сохранённые состояния
-          let savedStates = {};
-          const stored = localStorage.getItem('taskCheckboxes_v2');
-          if (stored) {
-            savedStates = JSON.parse(stored);
-          }
+        <div class="graph-card">
+            <h2>📊 График 3: Эффективность фильтрации</h2>
+            <div class="graph">
+                <img src="data:image/png;base64,{{ graphs.efficiency }}" alt="Эффективность">
+            </div>
+        </div>
 
-          taskItems.forEach((item, index) => {
-            // Сохраняем исходный текст
-            const originalText = item.innerHTML;
+        <div class="graph-card">
+            <h2>📊 График 4: Распределение обработки запросов</h2>
+            <div class="graph">
+                <img src="data:image/png;base64,{{ graphs.distribution }}" alt="Распределение">
+            </div>
+        </div>
+    </div>
 
-            // Создаём чекбокс
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.className = 'task-checkbox';
-            checkbox.setAttribute('data-task-id', index);
+    <hr>
+    <p>Разработано для оператора связи «Гартел» | ТЗ по ГОСТ 19.201-78</p>
 
-            // Восстанавливаем сохранённое состояние
-            if (savedStates[index]) {
-              checkbox.checked = true;
-            }
-
-            // Оборачиваем текст в span
-            const textSpan = document.createElement('span');
-            textSpan.className = 'task-text';
-            textSpan.innerHTML = originalText;
-
-            // Очищаем li и добавляем новую структуру
-            item.innerHTML = '';
-            item.appendChild(textSpan);
-            item.appendChild(checkbox);
-
-            // Добавляем класс для стилизации
-            item.classList.add('task-with-checkbox');
-            if (checkbox.checked) {
-              item.classList.add('completed-task');
-            }
-
-            // Обработчик изменения состояния
-            checkbox.addEventListener('change', function() {
-              if (checkbox.checked) {
-                item.classList.add('completed-task');
-              } else {
-                item.classList.remove('completed-task');
-              }
-
-              // Сохраняем все состояния
-              const allStates = {};
-              document.querySelectorAll('#taskList .task-checkbox').forEach((cb, idx) => {
-                allStates[idx] = cb.checked;
-              });
-              localStorage.setItem('taskCheckboxes_v2', JSON.stringify(allStates));
-            });
-          });
-        })();
-      </script>
-
-  </body>
+</body>
 </html>
