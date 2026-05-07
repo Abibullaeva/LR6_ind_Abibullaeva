@@ -1,8 +1,11 @@
-<!DOCTYPE html>
-<html lang="ru">
+<!DOCTYPE html> <!-- Объявление типа документа -->
+<html lang="ru">   <!-- Корневой элемент с указанием языка страницы (русский) -->
 <head>
     <meta charset="UTF-8">
-    <title>Контейнер безопасности - Гартел</title>
+    <!-- Установка кодировки UTF-8 для корректного отображения русских символов -->
+    <title>Контейнер безопасности - Гартел</title> <!-- Заголовок вкладки браузера -->
+
+    <!-- БЛОК СТИЛЕЙ CSS: определяет внешний вид всех элементов страницы -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -65,14 +68,19 @@
     </style>
 </head>
 <body>
+    <!-- Завершение блока стилей-->
 
+    <!-- ЗАГОЛОВОК И ОПИСАНИЕ -->
     <h1>🛡️ Контейнер безопасности</h1>
     <p>Оператор связи «Гартел» | Защита от угрозы УБИ.038</p>
 
-    <form method="get">
+
+    <!-- ФОРМА ВВОДА ПАРАМЕТРОВ -->
+    
+    <form method="get">  <!-- method="get" означает, что данные будут переданы через URL-параметры -->
         <div class="param">
             <label>👥 Абонентская база (человек):</label>
-            <input type="number" name="abonents" value="{{ current_params.abonents }}">
+            <input type="number" name="abonents" value="{{ current_params.abonents }}">  <!-- value="{{ current_params.abonents }}" – значение по умолчанию из Django контекста -->
         </div>
         <div class="param">
             <label>📞 Звонков в день на абонента:</label>
@@ -84,7 +92,7 @@
         </div>
         <div class="param">
             <label>⚠️ Критический порог свободного места (%):</label>
-            <input type="number" name="critical_free_percent" value="{{ current_params.critical_free_percent|default:10 }}" step="any">
+            <input type="number" name="critical_free_percent" value="{{ current_params.critical_free_percent|default:10 }}" step="any">   <!-- step="any" позволяет вводить десятичные числа -->
         </div>
         <div class="param">
             <label>⚡ Порог скорости потока (записей/сек):</label>
@@ -94,20 +102,27 @@
             <label>💾 Емкость буфера (записей):</label>
             <input type="number" name="buffer_capacity" value="{{ current_params.buffer_capacity }}">
         </div>
+        <!-- Кнопка отправки формы. После нажатия страница перезагрузится с новыми параметрами -->
         <button type="submit">🔄 Обновить графики</button>
     </form>
 
+
+    <!-- БЛОК СО СВОДНОЙ ИНФОРМАЦИЕЙ -->
+    <!-- Переменные total_records_per_day и payback_months переданы из Django -->
     <div class="info">
         <p>📈 Всего записей в день: <strong>{{ total_records_per_day|default:"—" }}</strong> | 
         💰 Окупаемость: <strong>{{ payback_months|default:"—" }} месяцев</strong></p>
     </div>
 
-    <hr>
+    <hr>   <!-- РАЗДЕЛИТЕЛЬНАЯ ЛИНИЯ -->
 
+     <!-- СЕТКА С ЧЕТЫРЬМЯ ГРАФИКАМИ -->
     <div class="graphs-grid">
         <div class="graph-card">
             <h2>📊 График 1: Динамика заполнения буфера</h2>
             <div class="graph">
+                <!-- graphs.buffer – строка base64, переданная из Django -->
+                <!-- src="data:image/png;base64,{{ graphs.buffer }}" – встраивание изображения прямо в HTML -->
                 <img src="data:image/png;base64,{{ graphs.buffer }}" alt="Заполнение буфера">
             </div>
         </div>
