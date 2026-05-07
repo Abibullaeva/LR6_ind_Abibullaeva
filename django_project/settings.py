@@ -70,23 +70,23 @@ USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ============================================
-# НАСТРОЙКИ HTTPS для Replit (работают и не ломают)
-# ============================================
+# # ============================================
+# # ДЛЯ ДЗ№8 ----- НАСТРОЙКИ HTTPS для Replit (работают и не ломают)
+# # ============================================
 
-# Cookies только по HTTPS
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# # Cookies только по HTTPS
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
 
-# HSTS (HTTP Strict Transport Security)
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
+# # HSTS (HTTP Strict Transport Security)
+# SECURE_HSTS_SECONDS = 31536000
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
 
-# Безопасные заголовки
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-X_FRAME_OPTIONS = 'DENY'
+# # Безопасные заголовки
+# SECURE_BROWSER_XSS_FILTER = True
+# SECURE_CONTENT_TYPE_NOSNIFF = True
+# X_FRAME_OPTIONS = 'DENY'
 
-# ПРИМЕЧАНИЕ: SECURE_SSL_REDIRECT = True НЕ ВКЛЮЧЁН,
-# потому что Replit сам перенаправляет HTTP → HTTPS
+# # ПРИМЕЧАНИЕ: SECURE_SSL_REDIRECT = True НЕ ВКЛЮЧЁН,
+# # потому что Replit сам перенаправляет HTTP → HTTPS
