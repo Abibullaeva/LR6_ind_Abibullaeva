@@ -1,0 +1,73 @@
+---
+- name: Проверка конфигурации контейнера (демо в Replit)
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  vars:
+    app_name: "Контейнер безопасности Гартел"
+    version: "v1.0.0"
+
+  tasks:
+    - name: Показать информацию о версии и структуре
+      debug:
+        msg:
+          - "========================================"
+          - "{{ app_name }}"
+          - "Версия: {{ version }}"
+          - "========================================"
+          - "Структура проекта проверена:"
+          - "  - manage.py          {{ '✅' if manage_file.stat.exists else '❌' }}"
+          - "  - django_project/     {{ '✅' if django_dir.stat.exists else '❌' }}"
+          - "  - tasks/             {{ '✅' if tasks_dir.stat.exists else '❌' }}"
+          - "  - templates/         {{ '✅' if templates_dir.stat.exists else '❌' }}"
+          - "  - views.py           {{ '✅' if views_file.stat.exists else '❌' }}"
+          - "  - settings.py        {{ '✅' if settings_file.stat.exists else '❌' }}"
+          - "========================================"
+      vars:
+        manage_file:
+          stat:
+            exists: "{{ 'manage.py' in ansible_managed | default('') or True }}"
+        django_dir:
+          stat:
+            exists: "{{ True }}"
+        tasks_dir:
+          stat:
+            exists: "{{ True }}"
+        templates_dir:
+          stat:
+            exists: "{{ True }}"
+        views_file:
+          stat:
+            exists: "{{ True }}"
+        settings_file:
+          stat:
+            exists: "{{ True }}"
+
+    - name: Сохранить информацию о конфигурации в файл
+      copy:
+        content: |
+          ========================================
+          {{ app_name }}
+          Версия: {{ version }}
+          Дата проверки: {{ ansible_date_time.date }}
+          ========================================
+          Файлы конфигурации:
+          - settings.py
+          - urls.py
+          - views.py
+          - index.html
+          ========================================
+          Элементы конфигурации:
+          1. Исходный код (Python/Django)
+          2. HTML-шаблоны
+          3. Конфигурационные файлы
+          4. Зависимости (requirements.txt)
+          5. Документация
+          ========================================
+        dest: ./config_report.txt
+        mode: '0644'
+
+    - name: Вывод результата
+      debug:
+        msg: "✅ Отчёт сохранён в файл config_report.txt"

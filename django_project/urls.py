@@ -21,4 +21,6 @@ from tasks import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", views.index),
+    path('metrics/', views.metrics, name='metrics'),  # <--- ДОБАЛЕНО ДЛЯ ДЗ№11
+    path('metrics', views.metrics, name='metrics_no_slash'), # <--- ДОБАЛЕНО ДЛЯ ДЗ№11 для сервера /metrics/
 ]
