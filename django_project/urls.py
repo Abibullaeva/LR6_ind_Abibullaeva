@@ -1,26 +1,77 @@
+# ==============================================
+# БЛОК ДОКУМЕНТАЦИИ (ОПИСАНИЕ МАРШРУТИЗАЦИИ)
+# ==============================================
 """
 URL configuration for django_project project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-from django.contrib import admin
-from django.urls import path
-from tasks import views
 
+Примеры:
+Function views:
+    1. from my_app import views
+    2. path('', views.home, name='home')
+
+Class-based views:
+    1. from other_app.views import Home
+    2. path('', Home.as_view(), name='home')
+
+Including another URLconf:
+    1. from django.urls import include, path
+    2. path('blog/', include('blog.urls'))
+"""
+
+# ==============================================
+# БЛОК ИМПОРТОВ
+# ==============================================
+from django.contrib import admin      # Административная панель Django
+from django.urls import path          # Функция для определения маршрутов
+from tasks import views               # Импорт ВСЕХ представлений из приложения tasks
+
+# ==============================================
+# БЛОК ОПРЕДЕЛЕНИЯ МАРШРУТОВ (URLpatterns)
+# ==============================================
 urlpatterns = [
+    # ==========================================
+    # МАРШРУТ №1: АДМИН-ПАНЕЛЬ
+    # ==========================================
     path('admin/', admin.site.urls),
+    # Адрес: /admin/
+    # Обработчик: встроенная админка Django
+    # Назначение: управление моделями и данными через веб-интерфейс
+
+    # ==========================================
+    # МАРШРУТ №2: ГЛАВНАЯ СТРАНИЦА
+    # ==========================================
     path("", views.index),
-    path('metrics/', views.metrics, name='metrics'),  # <--- ДОБАЛЕНО ДЛЯ ДЗ№11
-    path('metrics', views.metrics, name='metrics_no_slash'), # <--- ДОБАЛЕНО ДЛЯ ДЗ№11 для сервера /metrics/
+    # Адрес: / (корень сайта)
+    # Обработчик: функция index() из views.py
+    # Назначение: отображение главной страницы (контейнер безопасности)
+
+    # ==========================================
+    # МАРШРУТ №3: МЕТРИКИ (слеш в конце)
+    # ==========================================
+    path('metrics/', views.metrics, name='metrics'),
+    # Адрес: /metrics/
+    # Обработчик: функция metrics() из views.py
+    # Имя маршрута: 'metrics' (можно использовать в reverse() и шаблонах)
+    # Назначение: API для получения метрик в JSON (для ДЗ№11)
+
+    # ==========================================
+    # МАРШРУТ №4: МЕТРИКИ (без слеша в конце)
+    # ==========================================
+    path('metrics', views.metrics, name='metrics_no_slash'),
+    # Адрес: /metrics (без слеша)
+    # Обработчик: та же функция metrics() из views.py
+    # Имя маршрута: 'metrics_no_slash'
+    # Назначение: дубль для сервера /metrics/ (чтобы избежать 404)
 ]
+
+# ==============================================
+# КОММЕНТАРИЙ ПО БЕЗОПАСНОСТИ
+# ==============================================
+# ВНИМАНИЕ: Маршрут metrics не требует аутентификации.
+# В реальной продакшн-среде рекомендуется добавить:
+# - Ограничение по IP
+# - Токен авторизации
+# - Или перенести в admin-зону
